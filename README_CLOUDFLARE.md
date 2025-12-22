@@ -1,53 +1,70 @@
 # Configuración para Cloudflare Pages
 
-## Problema Resuelto
+## ⚠️ IMPORTANTE: Configuración en Cloudflare Pages Dashboard
 
-El proyecto estaba fallando en Cloudflare Pages porque intentaba usar Wrangler (para Workers) en lugar del adaptador de Next.js.
+Cloudflare Pages tiene soporte nativo para Next.js. **NO uses Wrangler** para este proyecto.
 
-## Solución Implementada
+## Configuración Requerida
 
-1. **Instalado `@cloudflare/next-on-pages`**: Adaptador oficial de Next.js para Cloudflare Pages
-2. **Creado script `build:cloudflare`**: Build específico para Cloudflare
-3. **Configurado `wrangler.toml`**: Configuración para Cloudflare Pages
-4. **Agregados archivos de configuración**: `_headers` y `_redirects` para Cloudflare Pages
+### 1. Framework Preset
 
-## Configuración en Cloudflare Pages
+En Cloudflare Pages → Settings → Builds & deployments:
 
-### Build Settings
+- **Framework preset**: Selecciona `Next.js` (debe estar disponible en la lista)
+- Si no aparece, selecciona `None` y configura manualmente
 
-1. **Framework preset**: `Next.js` (si está disponible) o `None`
-2. **Build command**: `npm run build:cloudflare`
-3. **Build output directory**: `.vercel/output/static`
-4. **Root directory**: `/` (raíz del proyecto)
+### 2. Build Settings
 
-### Variables de Entorno
+Si usas preset `None`, configura:
 
-Agregar en Cloudflare Pages → Settings → Environment Variables:
+- **Build command**: `npm run build`
+- **Build output directory**: `.next` (o déjalo vacío para auto-detect)
+- **Root directory**: `/` (raíz del proyecto)
+
+### 3. Deploy Command
+
+**IMPORTANTE**: Deja el campo "Deploy command" **VACÍO** o elimínalo completamente.
+
+**NO uses**: `npx wrangler deploy` (esto es para Workers, no para Pages)
+
+### 4. Variables de Entorno
+
+En Settings → Environment Variables, agrega:
 
 ```
 NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase
 NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key_de_supabase
 TZ=America/Lima
+NODE_ENV=production
 ```
 
-### Deploy Command (Opcional)
+## Solución al Error
 
-Si Cloudflare Pages tiene un campo "Deploy command", dejarlo vacío o usar:
+Si ves el error:
 ```
-npx @cloudflare/next-on-pages@1
+✘ [ERROR] Missing entry-point to Worker script
 ```
 
-## Notas Importantes
+**Causa**: Cloudflare Pages está intentando usar Wrangler (Workers) en lugar del preset de Next.js.
 
-- El proyecto usa Supabase, asegúrate de configurar las variables de entorno
-- `better-sqlite3` no funcionará en Cloudflare Pages (usa Supabase)
-- Los archivos en `public/uploads/` se servirán desde Cloudflare Pages
+**Solución**:
+1. Ve a Settings → Builds & deployments
+2. Cambia el Framework preset a `Next.js`
+3. Elimina cualquier "Deploy command" que contenga `wrangler`
+4. Guarda y vuelve a hacer deploy
+
+## Notas
+
+- Cloudflare Pages soporta Next.js nativamente desde 2024
+- No necesitas `@cloudflare/next-on-pages` (está deprecado)
+- No necesitas `wrangler.toml` para Pages (solo para Workers)
+- El build output de Next.js se detecta automáticamente
 
 ## Troubleshooting
 
 Si el deploy sigue fallando:
 
-1. Verificar que `@cloudflare/next-on-pages` esté instalado
-2. Verificar que el build command sea `npm run build:cloudflare`
-3. Verificar que las variables de entorno estén configuradas
-4. Revisar los logs de build en Cloudflare Pages
+1. Verifica que el Framework preset sea `Next.js`
+2. Verifica que no haya "Deploy command" configurado
+3. Verifica que las variables de entorno estén configuradas
+4. Revisa los logs de build en Cloudflare Pages

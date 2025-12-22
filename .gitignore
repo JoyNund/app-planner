@@ -10,6 +10,8 @@ package-lock.json
 /.next/
 /out/
 .next/
+.vercel/
+.wrangler/
 
 # TypeScript build info (se regenera)
 *.tsbuildinfo

@@ -1,0 +1,10 @@
+{
+  "build": {
+    "command": "npm run build:cloudflare",
+    "cwd": ".",
+    "watch_directories": []
+  },
+  "deploy": {
+    "command": "npx @cloudflare/next-on-pages@1"
+  }
+}

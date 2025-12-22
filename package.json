@@ -5,8 +5,10 @@
   "scripts": {
     "dev": "cross-env TZ=America/Lima next dev -p 3002",
     "build": "cross-env TZ=America/Lima next build",
+    "build:cloudflare": "cross-env TZ=America/Lima next build && npx @cloudflare/next-on-pages",
     "start": "cross-env TZ=America/Lima next start -p 3003",
-    "lint": "eslint"
+    "lint": "eslint",
+    "pages:deploy": "npx @cloudflare/next-on-pages"
   },
   "dependencies": {
     "@supabase/supabase-js": "^2.89.0",
@@ -20,6 +22,7 @@
     "zod": "^4.1.13"
   },
   "devDependencies": {
+    "@cloudflare/next-on-pages": "^1.15.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20",

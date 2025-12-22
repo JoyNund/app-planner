@@ -1,0 +1,34 @@
+{
+  "name": "mkt-planner",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "cross-env TZ=America/Lima next dev -p 3002",
+    "build": "cross-env TZ=America/Lima next build",
+    "start": "cross-env TZ=America/Lima next start -p 3003",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.89.0",
+    "bcryptjs": "^3.0.3",
+    "better-sqlite3": "^12.4.6",
+    "lucide-react": "^0.555.0",
+    "mysql2": "^3.15.3",
+    "next": "16.0.4",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "zod": "^4.1.13"
+  },
+  "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/better-sqlite3": "^7.6.13",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "cross-env": "^10.1.0",
+    "eslint": "^9",
+    "eslint-config-next": "16.0.4",
+    "tsx": "^4.20.6",
+    "typescript": "^5"
+  }
+}

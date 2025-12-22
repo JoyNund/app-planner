@@ -1,0 +1,48 @@
+# Dependencias (se instalan con npm install)
+node_modules/
+package-lock.json
+
+# Archivos de entorno local (contienen credenciales sensibles)
+.env*.local
+.env.local
+
+# Build temporal de Next.js (se regenera)
+/.next/
+/out/
+.next/
+
+# TypeScript build info (se regenera)
+*.tsbuildinfo
+
+# Base de datos local (ahora usamos Supabase)
+*.db
+*.sqlite
+*.sqlite3
+mkt-planner.db
+
+# Logs temporales
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+Desktop.ini
+
+# Archivos de backup
+*.backup
+*.bak
+
+# Archivos temporales
+*.tmp
+*.temp

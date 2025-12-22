@@ -6,7 +6,11 @@ import { join } from 'path';
 
 // Get Gemini API key from environment variables
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
+// Using Gemini 2.0 Flash (faster and more efficient) as default
+// Available models: gemini-2.0-flash, gemini-2.0-flash-lite, gemini-2.0-pro-exp
+// Note: gemini-1.5-pro and gemini-1.5-flash are deprecated as of September 2025
+const GEMINI_MODEL = process.env.GEMINI_MODEL || 'gemini-2.0-flash';
+const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
 export async function POST(request: NextRequest) {
   try {

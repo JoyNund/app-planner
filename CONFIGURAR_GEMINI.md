@@ -13,15 +13,27 @@ He actualizado el código para usar variables de entorno en lugar de tener la AP
 3. Click en **"Create API Key"** o usa una existente
 4. Copia la API key (formato: `AIzaSy...`)
 
-### Paso 2: Agregar Variable de Entorno en Vercel
+### Paso 2: Agregar Variables de Entorno en Vercel
 
 1. Ve a tu proyecto en Vercel: https://vercel.com
 2. Abre tu proyecto `app-planner`
 3. Ve a **Settings** → **Environment Variables**
-4. Agrega una nueva variable:
+4. Agrega las siguientes variables:
+
+   **Variable 1: GEMINI_API_KEY**
    - **Key**: `GEMINI_API_KEY`
    - **Value**: `AIzaSyBUukU6ziuqvUcKv-hbewAaJFjqMCjacTI` (o tu propia key)
    - **Environments**: ✅ Production, ✅ Preview, ✅ Development
+
+   **Variable 2: GEMINI_MODEL (Opcional)**
+   - **Key**: `GEMINI_MODEL`
+   - **Value**: `gemini-2.0-flash` (por defecto)
+   - **Opciones disponibles**:
+     - `gemini-2.0-flash` - Rápido y eficiente (recomendado)
+     - `gemini-2.0-flash-lite` - Más económico
+     - `gemini-2.0-pro-exp` - Mejor calidad para tareas complejas
+   - **Environments**: ✅ Production, ✅ Preview, ✅ Development
+
 5. Click en **"Save"**
 
 ### Paso 3: Hacer Nuevo Deploy
@@ -37,7 +49,28 @@ Si quieres probar localmente, agrega en tu archivo `.env.local`:
 
 ```env
 GEMINI_API_KEY=AIzaSyBUukU6ziuqvUcKv-hbewAaJFjqMCjacTI
+# Opcional: elegir modelo (por defecto: gemini-2.0-flash)
+GEMINI_MODEL=gemini-2.0-flash
 ```
+
+## 📋 Modelos Disponibles
+
+### Gemini 2.0 Flash (Recomendado - Por Defecto)
+- **Modelo**: `gemini-2.0-flash`
+- **Características**: Rápido, eficiente, 1M tokens de contexto
+- **Ideal para**: Uso general, respuestas rápidas
+
+### Gemini 2.0 Flash-Lite
+- **Modelo**: `gemini-2.0-flash-lite`
+- **Características**: Más económico, 1M tokens de contexto
+- **Ideal para**: Aplicaciones con alto volumen
+
+### Gemini 2.0 Pro Experimental
+- **Modelo**: `gemini-2.0-pro-exp`
+- **Características**: Mejor calidad, 2M tokens de contexto
+- **Ideal para**: Tareas complejas, mejor rendimiento en código
+
+⚠️ **Nota**: Los modelos `gemini-1.5-pro` y `gemini-1.5-flash` fueron deprecados en septiembre 2025.
 
 ## ✅ Verificación
 

@@ -13,6 +13,12 @@ const nextConfig: NextConfig = {
       fullUrl: false,
     },
   },
+  // Experimental features for better error handling
+  experimental: {
+    optimizePackageImports: ['lucide-react'],
+  },
+  // Turbopack configuration (Next.js 16 uses Turbopack by default)
+  turbopack: {},
 };
 
 export default nextConfig;

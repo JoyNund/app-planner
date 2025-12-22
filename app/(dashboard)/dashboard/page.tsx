@@ -110,11 +110,17 @@ export default function DashboardPage() {
     const fetchAllTasks = useCallback(async () => {
         try {
             const res = await fetch('/api/tasks');
+            if (!res.ok) {
+                throw new Error(`Failed to fetch all tasks: ${res.status} ${res.statusText}`);
+            }
             const data = await res.json();
             setAllTasks(data.tasks || []);
         } catch (error) {
             console.error('Error fetching all tasks:', error);
             setAllTasks([]);
+            if (error instanceof Error) {
+                console.error('Error details:', error.message);
+            }
         }
     }, []);
 
@@ -128,11 +134,18 @@ export default function DashboardPage() {
             if (filters.status) params.append('status', filters.status);
 
             const res = await fetch(`/api/tasks?${params}`);
+            if (!res.ok) {
+                throw new Error(`Failed to fetch tasks: ${res.status} ${res.statusText}`);
+            }
             const data = await res.json();
             setTasks(data.tasks || []);
         } catch (error) {
             console.error('Error fetching tasks:', error);
             setTasks([]);
+            // Show user-friendly error
+            if (error instanceof Error) {
+                console.error('Error details:', error.message);
+            }
         } finally {
             setLoading(false);
         }
@@ -225,12 +238,17 @@ export default function DashboardPage() {
     const fetchUsers = async () => {
         try {
             const res = await fetch('/api/users/list');
-            if (res.ok) {
-                const data = await res.json();
-                setUsers(data.users);
+            if (!res.ok) {
+                throw new Error(`Failed to fetch users: ${res.status} ${res.statusText}`);
             }
+            const data = await res.json();
+            setUsers(data.users || []);
         } catch (error) {
             console.error('Error fetching users:', error);
+            setUsers([]);
+            if (error instanceof Error) {
+                console.error('Error details:', error.message);
+            }
         }
     };
 

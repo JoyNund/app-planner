@@ -1,0 +1,28 @@
+-- Script para deshabilitar Row Level Security (RLS) en todas las tablas
+-- Ejecuta esto en Supabase SQL Editor si tienes problemas de permisos
+
+-- Deshabilitar RLS en todas las tablas
+ALTER TABLE users DISABLE ROW LEVEL SECURITY;
+ALTER TABLE tasks DISABLE ROW LEVEL SECURITY;
+ALTER TABLE task_assignments DISABLE ROW LEVEL SECURITY;
+ALTER TABLE task_comments DISABLE ROW LEVEL SECURITY;
+ALTER TABLE task_files DISABLE ROW LEVEL SECURITY;
+ALTER TABLE task_ai_chat DISABLE ROW LEVEL SECURITY;
+ALTER TABLE chat_messages DISABLE ROW LEVEL SECURITY;
+ALTER TABLE notes DISABLE ROW LEVEL SECURITY;
+ALTER TABLE note_shares DISABLE ROW LEVEL SECURITY;
+ALTER TABLE notifications DISABLE ROW LEVEL SECURITY;
+ALTER TABLE checklist_items DISABLE ROW LEVEL SECURITY;
+ALTER TABLE checklist_history DISABLE ROW LEVEL SECURITY;
+ALTER TABLE settings DISABLE ROW LEVEL SECURITY;
+ALTER TABLE sticker_packs DISABLE ROW LEVEL SECURITY;
+ALTER TABLE stickers DISABLE ROW LEVEL SECURITY;
+ALTER TABLE task_counters DISABLE ROW LEVEL SECURITY;
+ALTER TABLE ai_prompts_by_sector DISABLE ROW LEVEL SECURITY;
+ALTER TABLE ai_prompts DISABLE ROW LEVEL SECURITY;
+
+-- Verificar que RLS está deshabilitado
+SELECT tablename, rowsecurity 
+FROM pg_tables 
+WHERE schemaname = 'public' 
+ORDER BY tablename;

@@ -32,9 +32,16 @@ export async function POST(request: NextRequest) {
 
         let user;
         try {
+            console.log(`[LOGIN] Attempting to find user: '${username}'`);
             user = await userDb.getByUsername(username);
+            console.log(`[LOGIN] User lookup result:`, user ? { id: user.id, username: user.username } : 'NOT FOUND');
         } catch (dbError: any) {
-            console.error('Database error during login:', dbError);
+            console.error('[LOGIN] Database error during login:', {
+                error: dbError.message,
+                code: dbError.code,
+                details: dbError.details,
+                hint: dbError.hint
+            });
             return NextResponse.json(
                 { error: 'Database connection error. Please try again later.' },
                 { status: 500 }
@@ -42,7 +49,18 @@ export async function POST(request: NextRequest) {
         }
 
         if (!user) {
-            console.log(`Login attempt failed: User '${username}' not found`);
+            console.log(`[LOGIN] Login attempt failed: User '${username}' not found`);
+            // Try a direct query to debug
+            try {
+                const { supabase } = await import('@/lib/supabase');
+                const { data: debugData, error: debugError } = await supabase
+                    .from('users')
+                    .select('id, username')
+                    .eq('username', username);
+                console.log('[LOGIN] Debug query result:', { data: debugData, error: debugError });
+            } catch (debugErr) {
+                console.error('[LOGIN] Debug query failed:', debugErr);
+            }
             return NextResponse.json(
                 { error: 'Invalid credentials' },
                 { status: 401 }

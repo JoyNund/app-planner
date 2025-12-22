@@ -46,21 +46,37 @@ export async function GET() {
       connectionTest.error = 'Environment variables not configured';
     }
 
-    // Try to get admin user
+    // Try to get admin user using the same method as getByUsername
     let adminUser = null;
+    let adminUserError = null;
     if (supabaseUrl && supabaseKey) {
       try {
         const { data, error } = await supabase
           .from('users')
-          .select('id, username, full_name, role')
+          .select('*')
           .eq('username', 'admin')
           .single();
         
-        if (!error && data) {
-          adminUser = data;
+        if (error) {
+          adminUserError = {
+            code: error.code,
+            message: error.message,
+            details: error.details,
+            hint: error.hint
+          };
+        } else if (data) {
+          adminUser = {
+            id: data.id,
+            username: data.username,
+            full_name: data.full_name,
+            role: data.role,
+            has_password: !!data.password_hash
+          };
         }
-      } catch (err) {
-        // Ignore
+      } catch (err: any) {
+        adminUserError = {
+          exception: err.message || 'Unknown error'
+        };
       }
     }
 
@@ -68,6 +84,7 @@ export async function GET() {
       environment: envStatus,
       connection: connectionTest,
       adminUser,
+      adminUserError,
       timestamp: new Date().toISOString()
     });
   } catch (error: any) {

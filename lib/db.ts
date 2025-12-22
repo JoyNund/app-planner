@@ -39,22 +39,46 @@ export const userDb = {
   },
 
   getByUsername: async (username: string): Promise<User | undefined> => {
-    const { data, error } = await supabase
-      .from('users')
-      .select('*')
-      .eq('username', username)
-      .single();
-    
-    if (error) {
-      if (error.code === 'PGRST116') return undefined; // Not found
-      // Log connection errors for debugging
-      if (error.message?.includes('placeholder') || error.message?.includes('Invalid API key')) {
-        console.error('Supabase connection error - check environment variables:', error.message);
-        throw new Error('Database connection error. Please verify server configuration.');
+    try {
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('username', username)
+        .single();
+      
+      if (error) {
+        // PGRST116 = no rows returned (user not found)
+        if (error.code === 'PGRST116') {
+          console.log(`[DB] User '${username}' not found (PGRST116)`);
+          return undefined;
+        }
+        // Log other errors for debugging
+        console.error('[DB] Supabase query error:', {
+          code: error.code,
+          message: error.message,
+          details: error.details,
+          hint: error.hint,
+          username: username
+        });
+        
+        // Log connection errors for debugging
+        if (error.message?.includes('placeholder') || error.message?.includes('Invalid API key')) {
+          console.error('[DB] Supabase connection error - check environment variables:', error.message);
+          throw new Error('Database connection error. Please verify server configuration.');
+        }
+        throw error;
       }
-      throw error;
+      
+      console.log(`[DB] User '${username}' found:`, { id: data?.id, username: data?.username });
+      return data;
+    } catch (err: any) {
+      console.error('[DB] Exception in getByUsername:', {
+        message: err.message,
+        username: username,
+        error: err
+      });
+      throw err;
     }
-    return data;
   },
 
   create: async (username: string, password_hash: string, full_name: string, role: string, avatar_color: string) => {

@@ -2,7 +2,10 @@
 
 ## ✅ Cambios Realizados
 
-He actualizado el código para usar variables de entorno en lugar de tener la API key hardcodeada. Esto es más seguro y permite configurar diferentes keys para diferentes ambientes.
+1. **SDK Oficial de Google**: El código ahora usa el SDK oficial `@google/genai` en lugar de llamadas HTTP directas
+2. **Variables de Entorno**: La API key se lee de variables de entorno (más seguro)
+3. **Manejo de Historial**: Usa `chats.create()` para manejar el historial de conversación correctamente
+4. **Modelos Actualizados**: Usa modelos Gemini 2.0 (gemini-1.5-pro fue deprecado)
 
 ## 📝 Configuración en Vercel
 

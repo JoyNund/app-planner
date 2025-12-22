@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { Sparkles, Send, Loader2, Image, X, Trash2 } from 'lucide-react';
+import ReactMarkdown from 'react-markdown';
 
 interface TaskAIAssistantProps {
     taskTitle: string;
@@ -399,7 +400,146 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId, on
                                 )}
                                 {/* Text content */}
                                 {message.content && (
-                                    <div>{message.content}</div>
+                                    <div style={{
+                                        lineHeight: '1.6',
+                                    }}>
+                                        {message.role === 'assistant' ? (
+                                            <ReactMarkdown
+                                                components={{
+                                                    // Estilos para elementos de markdown
+                                                    p: ({ children }) => (
+                                                        <p style={{ margin: '0 0 0.75rem 0', lineHeight: '1.6' }}>
+                                                            {children}
+                                                        </p>
+                                                    ),
+                                                    strong: ({ children }) => (
+                                                        <strong style={{ fontWeight: 600, color: 'inherit' }}>
+                                                            {children}
+                                                        </strong>
+                                                    ),
+                                                    em: ({ children }) => (
+                                                        <em style={{ fontStyle: 'italic', color: 'inherit' }}>
+                                                            {children}
+                                                        </em>
+                                                    ),
+                                                    code: ({ children, className }) => {
+                                                        const isInline = !className;
+                                                        return isInline ? (
+                                                            <code style={{
+                                                                background: 'rgba(0, 0, 0, 0.1)',
+                                                                padding: '2px 6px',
+                                                                borderRadius: '4px',
+                                                                fontSize: '0.9em',
+                                                                fontFamily: 'monospace',
+                                                            }}>
+                                                                {children}
+                                                            </code>
+                                                        ) : (
+                                                            <code style={{
+                                                                display: 'block',
+                                                                background: 'rgba(0, 0, 0, 0.1)',
+                                                                padding: '12px',
+                                                                borderRadius: '6px',
+                                                                fontSize: '0.85em',
+                                                                fontFamily: 'monospace',
+                                                                overflow: 'auto',
+                                                                margin: '0.5rem 0',
+                                                            }}>
+                                                                {children}
+                                                            </code>
+                                                        );
+                                                    },
+                                                    ul: ({ children }) => (
+                                                        <ul style={{
+                                                            margin: '0.5rem 0',
+                                                            paddingLeft: '1.5rem',
+                                                            listStyleType: 'disc',
+                                                        }}>
+                                                            {children}
+                                                        </ul>
+                                                    ),
+                                                    ol: ({ children }) => (
+                                                        <ol style={{
+                                                            margin: '0.5rem 0',
+                                                            paddingLeft: '1.5rem',
+                                                            listStyleType: 'decimal',
+                                                        }}>
+                                                            {children}
+                                                        </ol>
+                                                    ),
+                                                    li: ({ children }) => (
+                                                        <li style={{ margin: '0.25rem 0' }}>
+                                                            {children}
+                                                        </li>
+                                                    ),
+                                                    h1: ({ children }) => (
+                                                        <h1 style={{
+                                                            fontSize: '1.5rem',
+                                                            fontWeight: 600,
+                                                            margin: '1rem 0 0.5rem 0',
+                                                        }}>
+                                                            {children}
+                                                        </h1>
+                                                    ),
+                                                    h2: ({ children }) => (
+                                                        <h2 style={{
+                                                            fontSize: '1.25rem',
+                                                            fontWeight: 600,
+                                                            margin: '0.75rem 0 0.5rem 0',
+                                                        }}>
+                                                            {children}
+                                                        </h2>
+                                                    ),
+                                                    h3: ({ children }) => (
+                                                        <h3 style={{
+                                                            fontSize: '1.1rem',
+                                                            fontWeight: 600,
+                                                            margin: '0.5rem 0 0.25rem 0',
+                                                        }}>
+                                                            {children}
+                                                        </h3>
+                                                    ),
+                                                    blockquote: ({ children }) => (
+                                                        <blockquote style={{
+                                                            borderLeft: '3px solid var(--accent-primary)',
+                                                            paddingLeft: '1rem',
+                                                            margin: '0.5rem 0',
+                                                            fontStyle: 'italic',
+                                                            opacity: 0.9,
+                                                        }}>
+                                                            {children}
+                                                        </blockquote>
+                                                    ),
+                                                    a: ({ children, href }) => (
+                                                        <a
+                                                            href={href}
+                                                            target="_blank"
+                                                            rel="noopener noreferrer"
+                                                            style={{
+                                                                color: 'var(--accent-primary)',
+                                                                textDecoration: 'underline',
+                                                            }}
+                                                        >
+                                                            {children}
+                                                        </a>
+                                                    ),
+                                                    hr: () => (
+                                                        <hr style={{
+                                                            border: 'none',
+                                                            borderTop: '1px solid var(--border-color)',
+                                                            margin: '1rem 0',
+                                                        }} />
+                                                    ),
+                                                }}
+                                            >
+                                                {message.content}
+                                            </ReactMarkdown>
+                                        ) : (
+                                            <div style={{ whiteSpace: 'pre-wrap' }}>
+                                                {message.content}
+                                            </div>
+                                        )}
+                                    </div>
                                 )}
                             </div>
                             <span style={{

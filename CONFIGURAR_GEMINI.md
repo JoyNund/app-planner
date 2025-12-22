@@ -101,6 +101,15 @@ Después del deploy, el chat de IA debería funcionar:
 
 ## 📋 Errores Comunes
 
+### Error: "models/gemini-1.5-pro is not found"
+**Causa**: El modelo `gemini-1.5-pro` fue deprecado en septiembre 2025.
+
+**Solución**: 
+1. El código ahora usa `gemini-2.0-flash` por defecto
+2. Si aún ves este error, verifica que `GEMINI_MODEL` esté configurado correctamente en Vercel
+3. Asegúrate de que el deploy más reciente esté activo
+4. Haz un nuevo deploy si es necesario
+
 ### Error: "Configuración de IA no disponible"
 **Causa**: La variable `GEMINI_API_KEY` no está configurada en Vercel.
 

@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname, useParams } from 'next/navigation';
 import { useAuth } from './AuthProvider';
 import TaskAIAssistant from './TaskAIAssistant';
-import { Sparkles, X } from 'lucide-react';
+import { Sparkles, X, Trash2 } from 'lucide-react';
 
 interface TaskAIChatProps {
     isMobile?: boolean;
@@ -21,6 +21,7 @@ export default function TaskAIChat({ isMobile = false, isOpen, otherChatOpen = f
     const [taskId, setTaskId] = useState<number | null>(null);
     const [taskTitle, setTaskTitle] = useState<string>('');
     const [taskDescription, setTaskDescription] = useState<string | null>(null);
+    const [clearChatFn, setClearChatFn] = useState<(() => Promise<void>) | null>(null);
 
     // Extract task ID from pathname if we're on a task detail page
     useEffect(() => {
@@ -174,6 +175,7 @@ export default function TaskAIChat({ isMobile = false, isOpen, otherChatOpen = f
                         taskTitle={taskTitle}
                         taskDescription={taskDescription}
                         taskId={taskId || undefined}
+                        onClearChatReady={setClearChatFn}
                     />
                 </div>
             </div>

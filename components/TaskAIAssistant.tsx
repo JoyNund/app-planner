@@ -8,6 +8,7 @@ interface TaskAIAssistantProps {
     taskDescription?: string | null;
     taskId?: number;
     onDiscard?: () => void;
+    onClearChatReady?: (clearFn: () => Promise<void>) => void;
 }
 
 interface MediaFile {
@@ -25,7 +26,7 @@ interface ChatMessage {
     created_at: string;
 }
 
-export default function TaskAIAssistant({ taskTitle, taskDescription, taskId }: TaskAIAssistantProps) {
+export default function TaskAIAssistant({ taskTitle, taskDescription, taskId, onClearChatReady }: TaskAIAssistantProps) {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [inputMessage, setInputMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -179,6 +180,13 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId }: 
         }
     };
 
+    // Expose clear chat function to parent
+    useEffect(() => {
+        if (onClearChatReady && taskId) {
+            onClearChatReady(handleClearChat);
+        }
+    }, [taskId, messages.length, onClearChatReady]);
+
     const sendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
         if ((!inputMessage.trim() && attachedFiles.length === 0) || !taskId || loading) return;
@@ -271,55 +279,6 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId }: 
             background: 'transparent',
             overflow: 'hidden',
         }}>
-            {/* Header */}
-            <div style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: 'var(--spacing-sm)',
-                padding: 'var(--spacing-md)',
-                borderBottom: '1px solid var(--border-color)',
-                background: 'var(--bg-tertiary)',
-                position: 'relative',
-            }}>
-                <Sparkles size={20} color="var(--accent-primary)" />
-                <h3 style={{
-                    fontSize: '1rem',
-                    fontWeight: 600,
-                    margin: 0,
-                    flex: 1,
-                }}>
-                    Asistente de IA
-                </h3>
-                {messages.length > 0 && (
-                    <button
-                        onClick={handleClearChat}
-                        style={{
-                            background: 'rgba(239, 68, 68, 0.1)',
-                            color: 'var(--status-urgent)',
-                            border: 'none',
-                            borderRadius: 'var(--radius-md)',
-                            padding: '6px 10px',
-                            cursor: 'pointer',
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: '4px',
-                            fontSize: '0.75rem',
-                            transition: 'background 0.2s',
-                        }}
-                        onMouseEnter={(e) => {
-                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
-                        }}
-                        onMouseLeave={(e) => {
-                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
-                        }}
-                        title="Limpiar historial del chat"
-                    >
-                        <Trash2 size={14} />
-                        Limpiar
-                    </button>
-                )}
-            </div>
-
             {/* Error */}
             {error && (
                 <div style={{

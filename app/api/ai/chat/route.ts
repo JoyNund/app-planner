@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { requireAuth } from '@/lib/auth';
-import { taskAIChatDb, taskDb } from '@/lib/db';
+import { taskAIChatDb, taskDb, settingsDb } from '@/lib/db';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
@@ -92,15 +92,31 @@ export async function POST(request: NextRequest) {
     // Get chat history for context
     const chatHistory = await taskAIChatDb.getByTaskId(taskId);
     
+    // Get master prompt from settings
+    const settings = await settingsDb.get();
+    let masterPrompt = settings?.ai_prompt_master || null;
+
+    // If no custom prompt, use default "general" prompt
+    if (!masterPrompt) {
+      const { supabase } = await import('@/lib/db');
+      const { data: defaultPrompt } = await supabase
+        .from('ai_prompts_by_sector')
+        .select('prompt_master')
+        .eq('sector', 'general')
+        .single();
+      masterPrompt = defaultPrompt?.prompt_master || '';
+    }
+
     try {
       // Build messages array for DeepSeek (OpenAI-compatible format)
       const messages: Array<{ role: 'system' | 'user' | 'assistant'; content: string }> = [];
 
-      // System instruction
-      const systemInstruction = isInitialPlan
-        ? `Eres un asistente de IA especializado en ayudar con tareas de marketing y creatividad. 
-
-Analiza la siguiente tarea y genera un plan de acción detallado y práctico:
+      // System instruction - use master prompt if available
+      let systemInstruction: string;
+      
+      if (isInitialPlan) {
+        // For initial plan, combine master prompt with task-specific instructions
+        const taskSpecificPrompt = `Analiza la siguiente tarea y genera un plan de acción detallado y práctico:
 
 TÍTULO: ${task.title}
 ${task.description ? `DESCRIPCIÓN: ${task.description}` : ''}
@@ -111,8 +127,21 @@ Genera un plan de acción que incluya:
 3. Consideraciones importantes
 4. Ideas creativas y sugerencias
 
-Sé específico, práctico y enfocado en resultados. El plan debe ser útil para ejecutar la tarea de manera efectiva.`
-        : "Eres un asistente de IA especializado en ayudar con tareas de marketing y creatividad. Sé conciso, profesional y útil. Si te piden un plan, ofrece pasos específicos y accionables.";
+Sé específico, práctico y enfocado en resultados. El plan debe ser útil para ejecutar la tarea de manera efectiva.`;
+
+        if (masterPrompt) {
+          systemInstruction = `${masterPrompt}\n\n${taskSpecificPrompt}`;
+        } else {
+          systemInstruction = `Eres un asistente de IA especializado en ayudar con tareas de marketing y creatividad.\n\n${taskSpecificPrompt}`;
+        }
+      } else {
+        // For chat continuation, use master prompt or default
+        if (masterPrompt) {
+          systemInstruction = masterPrompt;
+        } else {
+          systemInstruction = "Eres un asistente de IA especializado en ayudar con tareas de marketing y creatividad. Sé conciso, profesional y útil. Si te piden un plan, ofrece pasos específicos y accionables.";
+        }
+      }
 
       messages.push({
         role: 'system',

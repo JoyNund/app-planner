@@ -42,10 +42,9 @@ En la sección **"Environment Variables"**, agrega:
 - **Value**: `America/Lima`
 - **Environments**: ✅ Production, ✅ Preview, ✅ Development
 
-#### Variable 4:
-- **Key**: `NODE_ENV`
-- **Value**: `production`
-- **Environments**: ✅ Production, ✅ Preview, ✅ Development
+⚠️ **NOTA IMPORTANTE**: 
+- **NO agregues `NODE_ENV`** - Vercel la establece automáticamente como `production` en producción
+- Si `TZ` también da error de "reservada", simplemente omítela (la app funcionará igual)
 
 ### Paso 4: Deploy
 

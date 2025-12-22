@@ -58,8 +58,11 @@ Agrega estas variables en Vercel → Settings → Environment Variables:
 NEXT_PUBLIC_SUPABASE_URL=https://npqxwbosekumdlmtcgxt.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXh3Ym9zZWt1bWRsbXRjZ3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyOTYyMTAsImV4cCI6MjA4MTg3MjIxMH0.NCa-uI60akA0tPGkjyqFxBoDTWHQYU8UUgjiZurQ45k
 TZ=America/Lima
-NODE_ENV=production
 ```
+
+⚠️ **IMPORTANTE**: 
+- **NO agregues `NODE_ENV`** - Vercel la establece automáticamente
+- Si `TZ` también da error, omítela (opcional)
 
 ## ⚠️ Nota de Seguridad
 

@@ -4,12 +4,22 @@ import { taskAIChatDb, taskDb } from '@/lib/db';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
 
-const GEMINI_API_KEY = 'AIzaSyBUukU6ziuqvUcKv-hbewAaJFjqMCjacTI';
+// Get Gemini API key from environment variables
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
 const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent';
 
 export async function POST(request: NextRequest) {
   try {
     const session = await requireAuth();
+    
+    // Check if Gemini API key is configured
+    if (!GEMINI_API_KEY) {
+      console.error('GEMINI_API_KEY not configured');
+      return NextResponse.json(
+        { error: 'Configuración de IA no disponible. Por favor contacta al administrador.' },
+        { status: 500 }
+      );
+    }
     
     // Check if request has files (FormData) or JSON
     const contentType = request.headers.get('content-type') || '';
@@ -206,20 +216,88 @@ Sé específico, práctico y enfocado en resultados. El plan debe ser útil para
           topP: 0.95,
           maxOutputTokens: 2048,
         },
+        safetySettings: [
+          {
+            category: 'HARM_CATEGORY_HARASSMENT',
+            threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+          },
+          {
+            category: 'HARM_CATEGORY_HATE_SPEECH',
+            threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+          },
+          {
+            category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+            threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+          },
+          {
+            category: 'HARM_CATEGORY_DANGEROUS_CONTENT',
+            threshold: 'BLOCK_MEDIUM_AND_ABOVE',
+          },
+        ],
       }),
     });
 
     if (!response.ok) {
       const errorData = await response.text();
-      console.error('Gemini API error:', errorData);
+      let errorMessage = 'Error al comunicarse con la IA';
+      
+      try {
+        const errorJson = JSON.parse(errorData);
+        console.error('Gemini API error:', errorJson);
+        
+        // Provide more specific error messages
+        if (errorJson.error?.message) {
+          errorMessage = `Error de IA: ${errorJson.error.message}`;
+        } else if (errorJson.error?.status === 'INVALID_ARGUMENT') {
+          errorMessage = 'Solicitud inválida a la IA. Por favor intenta de nuevo.';
+        } else if (errorJson.error?.status === 'PERMISSION_DENIED') {
+          errorMessage = 'Error de permisos con la API de IA. Contacta al administrador.';
+        } else if (errorJson.error?.status === 'RESOURCE_EXHAUSTED') {
+          errorMessage = 'Límite de uso de IA alcanzado. Por favor intenta más tarde.';
+        }
+      } catch (parseError) {
+        console.error('Error parsing Gemini API error response:', errorData);
+      }
+      
       return NextResponse.json(
-        { error: 'Error al comunicarse con la IA' },
+        { error: errorMessage },
         { status: 500 }
       );
     }
 
     const data = await response.json();
-    const assistantMessage = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No se pudo generar una respuesta';
+    
+    // Check for safety blocks
+    if (data.promptFeedback?.blockReason) {
+      console.warn('Gemini API blocked prompt:', data.promptFeedback.blockReason);
+      return NextResponse.json(
+        { error: 'El contenido de tu mensaje fue bloqueado por las políticas de seguridad. Por favor reformula tu pregunta.' },
+        { status: 400 }
+      );
+    }
+    
+    // Check if response was blocked
+    const candidate = data.candidates?.[0];
+    if (candidate?.finishReason === 'SAFETY') {
+      console.warn('Gemini API blocked response due to safety:', candidate.safetyRatings);
+      return NextResponse.json(
+        { error: 'La respuesta fue bloqueada por las políticas de seguridad. Por favor intenta con una pregunta diferente.' },
+        { status: 400 }
+      );
+    }
+    
+    // Check for other finish reasons
+    if (candidate?.finishReason && candidate.finishReason !== 'STOP') {
+      console.warn('Gemini API finish reason:', candidate.finishReason);
+      if (candidate.finishReason === 'MAX_TOKENS') {
+        return NextResponse.json(
+          { error: 'La respuesta es demasiado larga. Por favor intenta con una pregunta más específica.' },
+          { status: 400 }
+        );
+      }
+    }
+    
+    const assistantMessage = candidate?.content?.parts?.[0]?.text || 'No se pudo generar una respuesta';
 
     // Save assistant response
     await taskAIChatDb.addMessage(taskId, 'assistant', assistantMessage);

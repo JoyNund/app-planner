@@ -2,7 +2,8 @@ import { NextRequest, NextResponse } from 'next/server';
 import { cookies } from 'next/headers';
 import { settingsDb } from '@/lib/db';
 
-const DEEPSEEK_API_KEY = 'sk-8928b7e8f33a4fc4be6d5471af00fa50';
+// Get DeepSeek API key from environment variables
+const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || '';
 const DEEPSEEK_API_URL = 'https://api.deepseek.com/v1/chat/completions';
 
 export async function POST(request: NextRequest) {
@@ -22,6 +23,15 @@ export async function POST(request: NextRequest) {
 
     if (!taskTitle) {
       return NextResponse.json({ error: 'Título de tarea requerido' }, { status: 400 });
+    }
+
+    // Check if DeepSeek API key is configured
+    if (!DEEPSEEK_API_KEY) {
+      console.error('DEEPSEEK_API_KEY not configured');
+      return NextResponse.json(
+        { error: 'Configuración de IA no disponible. Por favor contacta al administrador.' },
+        { status: 500 }
+      );
     }
 
     // Get master prompt from settings or default

@@ -67,14 +67,21 @@ export async function POST(request: NextRequest) {
             );
         }
 
+        console.log(`[LOGIN] Verifying password for user: ${username}`);
+        console.log(`[LOGIN] Password hash length: ${user.password_hash?.length || 0}`);
+        
         const isValid = await verifyPassword(password, user.password_hash);
+        console.log(`[LOGIN] Password verification result: ${isValid}`);
 
         if (!isValid) {
+            console.log(`[LOGIN] Password verification failed for user: ${username}`);
             return NextResponse.json(
                 { error: 'Invalid credentials' },
                 { status: 401 }
             );
         }
+        
+        console.log(`[LOGIN] Password verified successfully, creating session...`);
 
         await createSession(user);
 

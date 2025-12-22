@@ -10,7 +10,15 @@ export async function hashPassword(password: string): Promise<string> {
 }
 
 export async function verifyPassword(password: string, hash: string): Promise<boolean> {
-    return bcrypt.compare(password, hash);
+    try {
+        console.log(`[AUTH] Verifying password, hash length: ${hash?.length || 0}, hash prefix: ${hash?.substring(0, 10) || 'none'}`);
+        const result = await bcrypt.compare(password, hash);
+        console.log(`[AUTH] Password verification result: ${result}`);
+        return result;
+    } catch (error: any) {
+        console.error('[AUTH] Error verifying password:', error.message);
+        return false;
+    }
 }
 
 export interface SessionUser {

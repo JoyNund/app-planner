@@ -40,6 +40,10 @@ export const generateTasksFromAI = async (prompt: string): Promise<{ text: strin
       }
     });
 
+    if (!response.text) {
+      throw new Error("No response text from AI");
+    }
+    
     const result = JSON.parse(response.text);
     return {
       text: result.message,
@@ -63,5 +67,5 @@ export const chatWithAI = async (history: { role: string; parts: { text: string 
 
   // We can pass the existing history if needed, but for simplicity we'll handle single turns or manual history management
   const response = await chat.sendMessage({ message: newMessage });
-  return response.text;
+  return response.text || "No response from AI";
 };

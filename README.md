@@ -47,7 +47,8 @@ npm install
 Crear archivo `.env.local` con:
 ```
 NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase
-NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key_de_supabase
+# Puedes usar publishable key (recomendada) o anon key (legacy)
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_xxxxx
 ```
 
 4. Configurar base de datos:
@@ -125,7 +126,7 @@ mkt-planner/
 ### Variables de Entorno Requeridas
 
 - `NEXT_PUBLIC_SUPABASE_URL`: URL de tu proyecto Supabase
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Anon key de Supabase
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY`: Publishable key (recomendada) o Anon key (legacy) de Supabase
 
 ### Build de Producción
 

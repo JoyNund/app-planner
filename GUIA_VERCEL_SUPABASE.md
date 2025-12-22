@@ -38,13 +38,22 @@ Una vez creado el proyecto:
    ```
    (Copia esta URL completa)
 
-   **anon public key**:
+   **Publishable Key (RECOMENDADA)**:
+   ```
+   sb_publishable_xxxxx
+   ```
+   (Copia esta key completa - formato moderno y más seguro)
+
+   **Anon public key (Legacy - Compatible)**:
    ```
    eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh4eHh4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE2NDUxOTI4MDAsImV4cCI6MTk2MDc2ODgwMH0.xxxxx
    ```
-   (Copia esta key completa)
+   (También funciona, pero se recomienda usar publishable key)
 
-   ⚠️ **IMPORTANTE**: Usa la key que dice **"anon"** o **"public"**, NO la "service_role" key (esa es privada)
+   ⚠️ **IMPORTANTE**: 
+   - Usa la **publishable key** (recomendada) o la **anon/public key**
+   - NO uses la "service_role" key (esa es privada)
+   - El cliente de Supabase acepta ambas keys sin cambios en el código
 
 ### Paso 3: Aplicar Migración SQL
 
@@ -141,6 +150,12 @@ Antes de hacer deploy, agrega las variables de entorno:
    (Reemplaza con tu URL real de Supabase)
 
    ```
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_xxxxx
+   ```
+   (Reemplaza con tu publishable key - RECOMENDADO)
+   
+   O si prefieres usar anon key (legacy):
+   ```
    NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
    ```
    (Reemplaza con tu anon key real)
@@ -180,9 +195,9 @@ Antes de hacer deploy, agrega las variables de entorno:
 | Variable | Descripción | Dónde Obtenerla |
 |----------|-------------|-----------------|
 | `NEXT_PUBLIC_SUPABASE_URL` | URL de tu proyecto Supabase | Supabase → Settings → API → Project URL |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon/Public key de Supabase | Supabase → Settings → API → anon public key |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Publishable key (recomendada) o Anon key (legacy) | Supabase → Settings → API → Publishable key o anon public key |
 | `TZ` | Zona horaria | `America/Lima` |
-| `NODE_ENV` | Entorno | `production` |
+| `NODE_ENV` | Entorno | `production` (Vercel la establece automáticamente) |
 
 ### Variables Opcionales
 
@@ -253,12 +268,13 @@ Antes de hacer deploy, agrega las variables de entorno:
 
 ### Error: "Invalid API key"
 
-**Causa**: Usaste la key incorrecta (service_role en lugar de anon).
+**Causa**: Usaste la key incorrecta (service_role en lugar de publishable/anon).
 
 **Solución**:
 1. Ve a Settings → API en Supabase
-2. Usa la key que dice **"anon"** o **"public"**
-3. NO uses la "service_role" key
+2. Usa la **publishable key** (recomendada) o la key que dice **"anon"** o **"public"**
+3. NO uses la "service_role" key (esa es privada)
+4. El nombre de la variable `NEXT_PUBLIC_SUPABASE_ANON_KEY` se mantiene por compatibilidad, pero acepta ambas keys
 
 ### Error: "RLS policy violation"
 
@@ -314,7 +330,7 @@ Antes de considerar el deploy completo:
 - [ ] Proyecto creado en Supabase
 - [ ] Migración SQL ejecutada exitosamente
 - [ ] Todas las tablas creadas (17+ tablas)
-- [ ] Credenciales de Supabase copiadas (URL y anon key)
+- [ ] Credenciales de Supabase copiadas (URL y publishable key o anon key)
 - [ ] Proyecto conectado en Vercel
 - [ ] Variables de entorno agregadas en Vercel
 - [ ] Deploy exitoso en Vercel

@@ -15,15 +15,22 @@
 https://npqxwbosekumdlmtcgxt.supabase.co
 ```
 
-### Anon Public Key (Para usar en Vercel)
+### Publishable Key (RECOMENDADA - Moderna y más segura)
+```
+sb_publishable_Y9UWJk36erlnONAZrLfl0A_WR-9EZ4E
+```
+
+**Ventajas de la Publishable Key:**
+- ✅ Más segura y permite rotación independiente
+- ✅ Formato moderno recomendado por Supabase
+- ✅ Compatible con el cliente de Supabase sin cambios en el código
+
+### Anon Public Key (Legacy - Compatible)
 ```
 eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXh3Ym9zZWt1bWRsbXRjZ3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyOTYyMTAsImV4cCI6MjA4MTg3MjIxMH0.NCa-uI60akA0tPGkjyqFxBoDTWHQYU8UUgjiZurQ45k
 ```
 
-### Publishable Key (Alternativa moderna)
-```
-sb_publishable_Y9UWJk36erlnONAZrLfl0A_WR-9EZ4E
-```
+**Nota:** El cliente de Supabase acepta ambas keys. Puedes usar cualquiera de las dos en `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
 
 ## ✅ Estado de la Base de Datos
 
@@ -54,6 +61,14 @@ sb_publishable_Y9UWJk36erlnONAZrLfl0A_WR-9EZ4E
 
 Agrega estas variables en Vercel → Settings → Environment Variables:
 
+**Opción 1: Usar Publishable Key (RECOMENDADO)**
+```
+NEXT_PUBLIC_SUPABASE_URL=https://npqxwbosekumdlmtcgxt.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_Y9UWJk36erlnONAZrLfl0A_WR-9EZ4E
+TZ=America/Lima
+```
+
+**Opción 2: Usar Anon Key (Legacy - Compatible)**
 ```
 NEXT_PUBLIC_SUPABASE_URL=https://npqxwbosekumdlmtcgxt.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXh3Ym9zZWt1bWRsbXRjZ3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyOTYyMTAsImV4cCI6MjA4MTg3MjIxMH0.NCa-uI60akA0tPGkjyqFxBoDTWHQYU8UUgjiZurQ45k
@@ -63,6 +78,7 @@ TZ=America/Lima
 ⚠️ **IMPORTANTE**: 
 - **NO agregues `NODE_ENV`** - Vercel la establece automáticamente
 - Si `TZ` también da error, omítela (opcional)
+- El nombre de la variable `NEXT_PUBLIC_SUPABASE_ANON_KEY` se mantiene por compatibilidad, pero acepta tanto anon como publishable keys
 
 ## ⚠️ Nota de Seguridad
 

@@ -9,7 +9,8 @@ Esta opción crea todos los usuarios de prueba y datos de ejemplo.
 1. **Asegúrate de tener `.env.local`** con las variables de Supabase:
    ```
    NEXT_PUBLIC_SUPABASE_URL=https://npqxwbosekumdlmtcgxt.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXh3Ym9zZWt1bWRsbXRjZ3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyOTYyMTAsImV4cCI6MjA4MTg3MjIxMH0.NCa-uI60akA0tPGkjyqFxBoDTWHQYU8UUgjiZurQ45k
+   # Puedes usar publishable key (recomendada) o anon key (legacy)
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_Y9UWJk36erlnONAZrLfl0A_WR-9EZ4E
    ```
 
 2. **Ejecuta el seed**:

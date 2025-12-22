@@ -7,7 +7,8 @@ Esta es la forma más simple y recomendada:
 1. **Asegúrate de tener `.env.local`** con las variables de Supabase:
    ```env
    NEXT_PUBLIC_SUPABASE_URL=https://npqxwbosekumdlmtcgxt.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+   # Puedes usar publishable key (recomendada) o anon key (legacy)
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_Y9UWJk36erlnONAZrLfl0A_WR-9EZ4E
    ```
 
 2. **Ejecuta el seed**:

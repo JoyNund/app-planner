@@ -34,8 +34,10 @@ En la sección **"Environment Variables"**, agrega:
 
 #### Variable 2:
 - **Key**: `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-- **Value**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXh3Ym9zZWt1bWRsbXRjZ3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyOTYyMTAsImV4cCI6MjA4MTg3MjIxMH0.NCa-uI60akA0tPGkjyqFxBoDTWHQYU8UUgjiZurQ45k`
+- **Value (Publishable Key - RECOMENDADO)**: `sb_publishable_Y9UWJk36erlnONAZrLfl0A_WR-9EZ4E`
+- **Value (Anon Key - Legacy)**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im5wcXh3Ym9zZWt1bWRsbXRjZ3h0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjYyOTYyMTAsImV4cCI6MjA4MTg3MjIxMH0.NCa-uI60akA0tPGkjyqFxBoDTWHQYU8UUgjiZurQ45k`
 - **Environments**: ✅ Production, ✅ Preview, ✅ Development
+- **Nota**: Puedes usar cualquiera de las dos keys. La publishable key es más moderna y segura.
 
 #### Variable 3:
 - **Key**: `TZ`

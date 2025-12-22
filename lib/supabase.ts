@@ -1,6 +1,10 @@
 import { createClient } from '@supabase/supabase-js';
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
+// Acepta tanto anon key (legacy) como publishable key (moderna)
+// - Anon key: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9... (formato JWT)
+// - Publishable key: sb_publishable_... (formato moderno)
+// El cliente de Supabase acepta ambas sin cambios en el código
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
 // Create Supabase client (will throw error at runtime if env vars are missing)

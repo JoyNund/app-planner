@@ -120,7 +120,8 @@ mkt-planner/
 
 ```env
 NEXT_PUBLIC_SUPABASE_URL=tu_url_de_supabase
-NEXT_PUBLIC_SUPABASE_ANON_KEY=tu_anon_key_de_supabase
+# Puedes usar publishable key (recomendada) o anon key (legacy)
+NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_xxxxx
 ```
 
 ### Estructura de Tablas
@@ -330,7 +331,8 @@ El proyecto tiene **17+ tablas** principales:
 3. Crear `.env.local` con:
    ```env
    NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJxxx...
+   # Puedes usar publishable key (recomendada) o anon key (legacy)
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=sb_publishable_xxxxx
    ```
 
 ### 2. Dependencias Legacy ⚠️
@@ -417,7 +419,7 @@ npm install next@latest
 - [ ] **1. Crear proyecto en Supabase**
   - Ir a https://supabase.com
   - Crear nuevo proyecto
-  - Anotar URL y Anon Key
+  - Anotar URL y Publishable Key (o Anon Key como alternativa)
 
 - [ ] **2. Aplicar migración**
   - Ejecutar `supabase_migration.sql` en Supabase SQL Editor
@@ -426,7 +428,7 @@ npm install next@latest
 - [ ] **3. Configurar variables de entorno**
   - Crear `.env.local` en la raíz
   - Agregar `NEXT_PUBLIC_SUPABASE_URL`
-  - Agregar `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+  - Agregar `NEXT_PUBLIC_SUPABASE_ANON_KEY` (puede ser publishable key o anon key)
   - Agregar `DEEPSEEK_API_KEY` (opcional)
 
 - [ ] **4. Ejecutar seed**

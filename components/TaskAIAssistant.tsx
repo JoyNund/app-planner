@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import { Sparkles, Send, Loader2, Image, X } from 'lucide-react';
+import { Sparkles, Send, Loader2, Image, X, Trash2 } from 'lucide-react';
 
 interface TaskAIAssistantProps {
     taskTitle: string;
@@ -150,6 +150,35 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId }: 
         setAttachedFiles(prev => prev.filter((_, i) => i !== index));
     };
 
+    const handleClearChat = async () => {
+        if (!taskId) return;
+        
+        if (!confirm('¿Estás seguro de que deseas limpiar el historial del chat? Esta acción no se puede deshacer.')) {
+            return;
+        }
+
+        try {
+            const res = await fetch(`/api/ai/chat?taskId=${taskId}`, {
+                method: 'DELETE',
+            });
+
+            if (res.ok) {
+                setMessages([]);
+                setError(null);
+                // Optionally regenerate initial plan
+                if (taskTitle) {
+                    generateInitialPlan();
+                }
+            } else {
+                const errorData = await res.json();
+                throw new Error(errorData.error || 'Error al limpiar el chat');
+            }
+        } catch (err: any) {
+            console.error('Error clearing chat:', err);
+            setError(err.message || 'Error al limpiar el chat');
+        }
+    };
+
     const sendMessage = async (e: React.FormEvent) => {
         e.preventDefault();
         if ((!inputMessage.trim() && attachedFiles.length === 0) || !taskId || loading) return;
@@ -250,6 +279,7 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId }: 
                 padding: 'var(--spacing-md)',
                 borderBottom: '1px solid var(--border-color)',
                 background: 'var(--bg-tertiary)',
+                position: 'relative',
             }}>
                 <Sparkles size={20} color="var(--accent-primary)" />
                 <h3 style={{
@@ -260,6 +290,34 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId }: 
                 }}>
                     Asistente de IA
                 </h3>
+                {messages.length > 0 && (
+                    <button
+                        onClick={handleClearChat}
+                        style={{
+                            background: 'rgba(239, 68, 68, 0.1)',
+                            color: 'var(--status-urgent)',
+                            border: 'none',
+                            borderRadius: 'var(--radius-md)',
+                            padding: '6px 10px',
+                            cursor: 'pointer',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '4px',
+                            fontSize: '0.75rem',
+                            transition: 'background 0.2s',
+                        }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.2)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.background = 'rgba(239, 68, 68, 0.1)';
+                        }}
+                        title="Limpiar historial del chat"
+                    >
+                        <Trash2 size={14} />
+                        Limpiar
+                    </button>
+                )}
             </div>
 
             {/* Error */}

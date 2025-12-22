@@ -7,11 +7,17 @@ const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL || '';
 // El cliente de Supabase acepta ambas sin cambios en el código
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || '';
 
-// Create Supabase client (will throw error at runtime if env vars are missing)
+// Create Supabase client
 // During build, we use empty strings to avoid build-time errors
+// In runtime, if env vars are missing, we still create a client but it will fail on queries
 export const supabase = supabaseUrl && supabaseAnonKey
   ? createClient(supabaseUrl, supabaseAnonKey)
   : createClient('https://placeholder.supabase.co', 'placeholder-key');
+
+// Helper to check if Supabase is properly configured
+export function isSupabaseConfigured(): boolean {
+  return !!(supabaseUrl && supabaseAnonKey);
+}
 
 // Helper function to get current datetime in Lima timezone
 export function getLimaDateTime(): string {

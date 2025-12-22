@@ -47,6 +47,11 @@ export const userDb = {
     
     if (error) {
       if (error.code === 'PGRST116') return undefined; // Not found
+      // Log connection errors for debugging
+      if (error.message?.includes('placeholder') || error.message?.includes('Invalid API key')) {
+        console.error('Supabase connection error - check environment variables:', error.message);
+        throw new Error('Database connection error. Please verify server configuration.');
+      }
       throw error;
     }
     return data;

@@ -5,6 +5,21 @@ import { loginSchema, validateRequest } from '@/lib/validations';
 
 export async function POST(request: NextRequest) {
     try {
+        // Check environment variables first
+        const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+        const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+        
+        if (!supabaseUrl || !supabaseKey) {
+            console.error('Missing Supabase environment variables:', {
+                url: !!supabaseUrl,
+                key: !!supabaseKey
+            });
+            return NextResponse.json(
+                { error: 'Server configuration error. Please contact administrator.' },
+                { status: 500 }
+            );
+        }
+
         // Validate request body
         const validation = await validateRequest(request, loginSchema);
         if (!validation.success) {
@@ -15,9 +30,19 @@ export async function POST(request: NextRequest) {
         }
         const { username, password } = validation.data;
 
-        const user = await userDb.getByUsername(username);
+        let user;
+        try {
+            user = await userDb.getByUsername(username);
+        } catch (dbError: any) {
+            console.error('Database error during login:', dbError);
+            return NextResponse.json(
+                { error: 'Database connection error. Please try again later.' },
+                { status: 500 }
+            );
+        }
 
         if (!user) {
+            console.log(`Login attempt failed: User '${username}' not found`);
             return NextResponse.json(
                 { error: 'Invalid credentials' },
                 { status: 401 }
@@ -45,10 +70,13 @@ export async function POST(request: NextRequest) {
                 avatar_color: user.avatar_color,
             },
         });
-    } catch (error) {
+    } catch (error: any) {
         console.error('Login error:', error);
         return NextResponse.json(
-            { error: 'Internal server error' },
+            { 
+                error: 'Internal server error',
+                details: process.env.NODE_ENV === 'development' ? error.message : undefined
+            },
             { status: 500 }
         );
     }

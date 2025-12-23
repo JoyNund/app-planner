@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import { Sparkles, Send, Loader2, Image, X, Trash2 } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
@@ -68,7 +68,7 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId, on
         loadChatHistory();
     }, [taskId]);
 
-    const generateInitialPlan = async () => {
+    const generateInitialPlan = useCallback(async () => {
         if (!taskId) return;
 
         setInitialPlanLoading(true);
@@ -104,7 +104,7 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId, on
         } finally {
             setInitialPlanLoading(false);
         }
-    };
+    }, [taskId, taskTitle, taskDescription]);
 
     const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const files = e.target.files;
@@ -152,9 +152,10 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId, on
         setAttachedFiles(prev => prev.filter((_, i) => i !== index));
     };
 
-    const handleClearChat = async () => {
+    const handleClearChat = useCallback(async () => {
         if (!taskId) return;
         
+        // Only show confirm when user explicitly clicks the button
         if (!confirm('¿Estás seguro de que deseas limpiar el historial del chat? Esta acción no se puede deshacer.')) {
             return;
         }
@@ -179,14 +180,21 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId, on
             console.error('Error clearing chat:', err);
             setError(err.message || 'Error al limpiar el chat');
         }
-    };
+    }, [taskId, taskTitle, generateInitialPlan]); // Memoize to prevent recreation
 
     // Expose clear chat function to parent (only when taskId changes)
+    // Use a ref to track if we've already exposed the function to avoid multiple calls
+    const hasExposedRef = useRef(false);
     useEffect(() => {
-        if (onClearChatReady && taskId) {
+        if (onClearChatReady && taskId && !hasExposedRef.current) {
             onClearChatReady(handleClearChat);
+            hasExposedRef.current = true;
         }
-    }, [taskId]); // Only depend on taskId to avoid multiple executions
+        // Reset when taskId changes
+        if (!taskId) {
+            hasExposedRef.current = false;
+        }
+    }, [taskId, handleClearChat, onClearChatReady]);
 
     const sendMessage = async (e: React.FormEvent) => {
         e.preventDefault();

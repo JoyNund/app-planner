@@ -153,14 +153,22 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId, on
     };
 
     const handleClearChat = useCallback(async () => {
-        if (!taskId) return;
+        console.log('[handleClearChat] Function called - this should only happen on user click');
+        if (!taskId) {
+            console.log('[handleClearChat] No taskId, returning');
+            return;
+        }
         
         // Only show confirm when user explicitly clicks the button
         // This should NEVER be called automatically - only on user click
+        console.log('[handleClearChat] Showing confirm dialog');
         const userConfirmed = confirm('¿Estás seguro de que deseas limpiar el historial del chat? Esta acción no se puede deshacer.');
         if (!userConfirmed) {
+            console.log('[handleClearChat] User cancelled');
             return;
         }
+        
+        console.log('[handleClearChat] User confirmed, proceeding to clear chat');
 
         try {
             const res = await fetch(`/api/ai/chat?taskId=${taskId}`, {
@@ -185,11 +193,13 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId, on
     }, [taskId, taskTitle, generateInitialPlan]); // Memoize to prevent recreation
 
     // Expose clear chat function to parent (only when taskId changes)
-    // Use a ref to track the last taskId to avoid re-exposing unnecessarily
+    // IMPORTANT: This only passes the function reference, it does NOT execute it
     const lastTaskIdRef = useRef<number | undefined>(undefined);
     useEffect(() => {
         // Only expose if taskId changed and we have the callback
+        // This should NEVER execute the function, only pass the reference
         if (onClearChatReady && taskId && taskId !== lastTaskIdRef.current) {
+            // Pass the function reference directly - it should only be called on user click
             onClearChatReady(handleClearChat);
             lastTaskIdRef.current = taskId;
         }

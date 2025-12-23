@@ -164,16 +164,19 @@ export default function TaskAIChat({ isMobile = false, isOpen, otherChatOpen = f
                             <button
                                 type="button"
                                 onClick={(e) => {
+                                    console.log('[TaskAIChat] Clear button clicked');
                                     e.preventDefault();
                                     e.stopPropagation();
-                                    // Only execute if this is a real user click event
-                                    if (clearChatFn && e.isTrusted) {
+                                    if (clearChatFn) {
+                                        console.log('[TaskAIChat] Calling clearChatFn');
                                         clearChatFn();
+                                    } else {
+                                        console.log('[TaskAIChat] clearChatFn is null');
                                     }
                                 }}
                                 className="btn btn-ghost btn-sm"
                                 title="Limpiar chat"
-                                style={{ padding: '4px 8px' }}
+                                style={{ padding: '4px 8px', cursor: 'pointer' }}
                             >
                                 <Trash2 size={16} strokeWidth={2} color="var(--text-secondary)" />
                             </button>

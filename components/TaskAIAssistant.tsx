@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { Sparkles, Send, Loader2, Image, X, Trash2 } from 'lucide-react';
+import { Sparkles, Send, Loader2, Image, X } from 'lucide-react';
 import ReactMarkdown from 'react-markdown';
 
 interface TaskAIAssistantProps {
@@ -9,7 +9,6 @@ interface TaskAIAssistantProps {
     taskDescription?: string | null;
     taskId?: number;
     onDiscard?: () => void;
-    onClearChatReady?: (clearFn: () => Promise<void>) => void;
 }
 
 interface MediaFile {
@@ -27,7 +26,7 @@ interface ChatMessage {
     created_at: string;
 }
 
-export default function TaskAIAssistant({ taskTitle, taskDescription, taskId, onClearChatReady }: TaskAIAssistantProps) {
+export default function TaskAIAssistant({ taskTitle, taskDescription, taskId }: TaskAIAssistantProps) {
     const [messages, setMessages] = useState<ChatMessage[]>([]);
     const [inputMessage, setInputMessage] = useState('');
     const [loading, setLoading] = useState(false);
@@ -152,62 +151,6 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId, on
         setAttachedFiles(prev => prev.filter((_, i) => i !== index));
     };
 
-    const handleClearChat = useCallback(async () => {
-        console.log('[handleClearChat] Function called - this should only happen on user click');
-        if (!taskId) {
-            console.log('[handleClearChat] No taskId, returning');
-            return;
-        }
-        
-        // Only show confirm when user explicitly clicks the button
-        // This should NEVER be called automatically - only on user click
-        console.log('[handleClearChat] Showing confirm dialog');
-        const userConfirmed = confirm('¿Estás seguro de que deseas limpiar el historial del chat? Esta acción no se puede deshacer.');
-        if (!userConfirmed) {
-            console.log('[handleClearChat] User cancelled');
-            return;
-        }
-        
-        console.log('[handleClearChat] User confirmed, proceeding to clear chat');
-
-        try {
-            const res = await fetch(`/api/ai/chat?taskId=${taskId}`, {
-                method: 'DELETE',
-            });
-
-            if (res.ok) {
-                setMessages([]);
-                setError(null);
-                // Optionally regenerate initial plan
-                if (taskTitle) {
-                    generateInitialPlan();
-                }
-            } else {
-                const errorData = await res.json();
-                throw new Error(errorData.error || 'Error al limpiar el chat');
-            }
-        } catch (err: any) {
-            console.error('Error clearing chat:', err);
-            setError(err.message || 'Error al limpiar el chat');
-        }
-    }, [taskId, taskTitle, generateInitialPlan]); // Memoize to prevent recreation
-
-    // Expose clear chat function to parent (only when taskId changes)
-    // IMPORTANT: This only passes the function reference, it does NOT execute it
-    const lastTaskIdRef = useRef<number | undefined>(undefined);
-    useEffect(() => {
-        // Only expose if taskId changed and we have the callback
-        // This should NEVER execute the function, only pass the reference
-        if (onClearChatReady && taskId && taskId !== lastTaskIdRef.current) {
-            // Pass the function reference directly - it should only be called on user click
-            onClearChatReady(handleClearChat);
-            lastTaskIdRef.current = taskId;
-        }
-        // Reset when taskId is cleared
-        if (!taskId) {
-            lastTaskIdRef.current = undefined;
-        }
-    }, [taskId, handleClearChat, onClearChatReady]);
 
     const sendMessage = async (e: React.FormEvent) => {
         e.preventDefault();

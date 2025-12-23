@@ -290,28 +290,3 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// DELETE endpoint to clear chat history for a task
-export async function DELETE(request: NextRequest) {
-  try {
-    await requireAuth();
-    const searchParams = request.nextUrl.searchParams;
-    const taskId = searchParams.get('taskId');
-
-    if (!taskId) {
-      return NextResponse.json({ error: 'taskId es requerido' }, { status: 400 });
-    }
-
-    await taskAIChatDb.deleteByTaskId(parseInt(taskId));
-
-    return NextResponse.json({
-      success: true,
-      message: 'Chat limpiado exitosamente',
-    });
-  } catch (error) {
-    console.error('Error clearing chat:', error);
-    return NextResponse.json(
-      { error: 'Error interno del servidor' },
-      { status: 500 }
-    );
-  }
-}

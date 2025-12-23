@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { usePathname, useParams } from 'next/navigation';
 import { useAuth } from './AuthProvider';
 import TaskAIAssistant from './TaskAIAssistant';
-import { Sparkles, X, Trash2 } from 'lucide-react';
+import { Sparkles, X } from 'lucide-react';
 
 interface TaskAIChatProps {
     isMobile?: boolean;
@@ -21,7 +21,6 @@ export default function TaskAIChat({ isMobile = false, isOpen, otherChatOpen = f
     const [taskId, setTaskId] = useState<number | null>(null);
     const [taskTitle, setTaskTitle] = useState<string>('');
     const [taskDescription, setTaskDescription] = useState<string | null>(null);
-    const [clearChatFn, setClearChatFn] = useState<(() => Promise<void>) | null>(null);
 
     // Extract task ID from pathname if we're on a task detail page
     useEffect(() => {
@@ -159,37 +158,14 @@ export default function TaskAIChat({ isMobile = false, isOpen, otherChatOpen = f
                             Asistente de IA
                         </h3>
                     </div>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                        {clearChatFn && (
-                            <button
-                                type="button"
-                                onClick={(e) => {
-                                    console.log('[TaskAIChat] Clear button clicked');
-                                    e.preventDefault();
-                                    e.stopPropagation();
-                                    if (clearChatFn) {
-                                        console.log('[TaskAIChat] Calling clearChatFn');
-                                        clearChatFn();
-                                    } else {
-                                        console.log('[TaskAIChat] clearChatFn is null');
-                                    }
-                                }}
-                                className="btn btn-ghost btn-sm"
-                                title="Limpiar chat"
-                                style={{ padding: '4px 8px', cursor: 'pointer' }}
-                            >
-                                <Trash2 size={16} strokeWidth={2} color="var(--text-secondary)" />
-                            </button>
-                        )}
-                        <button
-                            onClick={handleClose}
-                            className="btn btn-ghost btn-sm"
-                            title="Cerrar chat"
-                            style={{ padding: '4px 8px' }}
-                        >
-                            <X size={16} strokeWidth={2} color="var(--text-secondary)" />
-                        </button>
-                    </div>
+                    <button
+                        onClick={handleClose}
+                        className="btn btn-ghost btn-sm"
+                        title="Cerrar chat"
+                        style={{ padding: '4px 8px' }}
+                    >
+                        <X size={16} strokeWidth={2} color="var(--text-secondary)" />
+                    </button>
                 </div>
 
                 {/* Chat Content */}
@@ -198,7 +174,6 @@ export default function TaskAIChat({ isMobile = false, isOpen, otherChatOpen = f
                         taskTitle={taskTitle}
                         taskDescription={taskDescription}
                         taskId={taskId || undefined}
-                        onClearChatReady={setClearChatFn}
                     />
                 </div>
             </div>

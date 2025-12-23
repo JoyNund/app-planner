@@ -162,7 +162,15 @@ export default function TaskAIChat({ isMobile = false, isOpen, otherChatOpen = f
                     <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                         {clearChatFn && (
                             <button
-                                onClick={clearChatFn}
+                                type="button"
+                                onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    // Only execute if this is a real user click event
+                                    if (clearChatFn && e.isTrusted) {
+                                        clearChatFn();
+                                    }
+                                }}
                                 className="btn btn-ghost btn-sm"
                                 title="Limpiar chat"
                                 style={{ padding: '4px 8px' }}

@@ -156,7 +156,9 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId, on
         if (!taskId) return;
         
         // Only show confirm when user explicitly clicks the button
-        if (!confirm('¿Estás seguro de que deseas limpiar el historial del chat? Esta acción no se puede deshacer.')) {
+        // This should NEVER be called automatically - only on user click
+        const userConfirmed = confirm('¿Estás seguro de que deseas limpiar el historial del chat? Esta acción no se puede deshacer.');
+        if (!userConfirmed) {
             return;
         }
 
@@ -183,16 +185,17 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId, on
     }, [taskId, taskTitle, generateInitialPlan]); // Memoize to prevent recreation
 
     // Expose clear chat function to parent (only when taskId changes)
-    // Use a ref to track if we've already exposed the function to avoid multiple calls
-    const hasExposedRef = useRef(false);
+    // Use a ref to track the last taskId to avoid re-exposing unnecessarily
+    const lastTaskIdRef = useRef<number | undefined>(undefined);
     useEffect(() => {
-        if (onClearChatReady && taskId && !hasExposedRef.current) {
+        // Only expose if taskId changed and we have the callback
+        if (onClearChatReady && taskId && taskId !== lastTaskIdRef.current) {
             onClearChatReady(handleClearChat);
-            hasExposedRef.current = true;
+            lastTaskIdRef.current = taskId;
         }
-        // Reset when taskId changes
+        // Reset when taskId is cleared
         if (!taskId) {
-            hasExposedRef.current = false;
+            lastTaskIdRef.current = undefined;
         }
     }, [taskId, handleClearChat, onClearChatReady]);
 

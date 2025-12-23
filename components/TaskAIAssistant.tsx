@@ -181,12 +181,12 @@ export default function TaskAIAssistant({ taskTitle, taskDescription, taskId, on
         }
     };
 
-    // Expose clear chat function to parent
+    // Expose clear chat function to parent (only when taskId changes)
     useEffect(() => {
         if (onClearChatReady && taskId) {
             onClearChatReady(handleClearChat);
         }
-    }, [taskId, messages.length, onClearChatReady]);
+    }, [taskId]); // Only depend on taskId to avoid multiple executions
 
     const sendMessage = async (e: React.FormEvent) => {
         e.preventDefault();

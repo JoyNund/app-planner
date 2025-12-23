@@ -159,14 +159,26 @@ export default function TaskAIChat({ isMobile = false, isOpen, otherChatOpen = f
                             Asistente de IA
                         </h3>
                     </div>
-                    <button
-                        onClick={handleClose}
-                        className="btn btn-ghost btn-sm"
-                        title="Cerrar chat"
-                        style={{ padding: '4px 8px' }}
-                    >
-                        <X size={16} strokeWidth={2} color="var(--text-secondary)" />
-                    </button>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        {clearChatFn && (
+                            <button
+                                onClick={clearChatFn}
+                                className="btn btn-ghost btn-sm"
+                                title="Limpiar chat"
+                                style={{ padding: '4px 8px' }}
+                            >
+                                <Trash2 size={16} strokeWidth={2} color="var(--text-secondary)" />
+                            </button>
+                        )}
+                        <button
+                            onClick={handleClose}
+                            className="btn btn-ghost btn-sm"
+                            title="Cerrar chat"
+                            style={{ padding: '4px 8px' }}
+                        >
+                            <X size={16} strokeWidth={2} color="var(--text-secondary)" />
+                        </button>
+                    </div>
                 </div>
 
                 {/* Chat Content */}

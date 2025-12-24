@@ -25,7 +25,10 @@
 Vercel te mostrará los registros DNS que necesitas configurar. Anota estos valores:
 - **Tipo**: `CNAME`
 - **Nombre**: Tu subdominio (ej: `app` o `planner`)
-- **Valor**: `cname.vercel-dns.com` (o similar)
+- **Valor**: `e1dcd1f4940fcafc.vercel-dns-017.com` (o similar)
+  - ⚠️ **IMPORTANTE**: Vercel genera un valor único para cada dominio
+  - ✅ Usa el valor EXACTO que Vercel te muestra
+  - Ejemplos comunes: `cname.vercel-dns.com`, `xxxxx.vercel-dns-017.com`, etc.
 
 ---
 
@@ -46,8 +49,10 @@ Vercel te mostrará los registros DNS que necesitas configurar. Anota estos valo
      - ⚠️ **IMPORTANTE**: Solo el nombre del subdominio, NO incluyas el dominio completo
      - ✅ Correcto: `app`
      - ❌ Incorrecto: `app.tudominio.com`
-   - **Target**: `cname.vercel-dns.com`
-     - ⚠️ **NOTA**: Vercel te dará el valor exacto en el paso 1.2
+   - **Target**: `e1dcd1f4940fcafc.vercel-dns-017.com` (o el valor que Vercel te mostró)
+     - ⚠️ **IMPORTANTE**: Usa el valor EXACTO que Vercel te proporcionó en el paso 1.2
+     - Cada proyecto/dominio tiene su propio valor único
+     - Ejemplos: `cname.vercel-dns.com`, `xxxxx.vercel-dns-017.com`, etc.
    - **Proxy status**: 
      - ✅ **Recomendado**: Activa el proxy (nube naranja) para protección DDoS
      - ⚠️ **Alternativa**: Desactiva el proxy si Vercel requiere SSL directo
@@ -58,9 +63,11 @@ Vercel te mostrará los registros DNS que necesitas configurar. Anota estos valo
 
 Deberías ver algo como:
 ```
-Type    Name    Content                    Proxy
-CNAME   app     cname.vercel-dns.com       Proxied
+Type    Name    Content                              Proxy
+CNAME   app     e1dcd1f4940fcafc.vercel-dns-017.com  Proxied
 ```
+
+⚠️ **Nota**: El valor de "Content" será el que Vercel te proporcionó específicamente.
 
 ---
 
@@ -172,9 +179,10 @@ Si quieres que el dominio principal también apunte a Vercel:
 3. El DNS aún no se ha propagado
 
 **Soluciones:**
-1. Verifica que el CNAME apunte exactamente a `cname.vercel-dns.com`
+1. Verifica que el CNAME apunte exactamente al valor que Vercel te proporcionó (ej: `e1dcd1f4940fcafc.vercel-dns-017.com`)
 2. Intenta desactivar temporalmente el proxy de Cloudflare
 3. Espera 10-15 minutos y verifica de nuevo
+4. Verifica en Vercel → Settings → Domains que el valor del CNAME sea correcto
 
 ### Problema: Certificado SSL no funciona
 
@@ -209,13 +217,13 @@ Si quieres que el dominio principal también apunte a Vercel:
 
 **En Vercel:**
 - Agregar dominio: `app.ejemplo.com`
-- Vercel muestra: `CNAME app -> cname.vercel-dns.com`
+- Vercel muestra: `CNAME app -> e1dcd1f4940fcafc.vercel-dns-017.com` (valor único)
 
 **En Cloudflare:**
 ```
 Type: CNAME
 Name: app
-Target: cname.vercel-dns.com
+Target: e1dcd1f4940fcafc.vercel-dns-017.com (usa el valor exacto de Vercel)
 Proxy: Proxied (nube naranja)
 TTL: Auto
 ```

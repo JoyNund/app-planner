@@ -97,6 +97,7 @@ export default function DashboardLayout({
                                 setIsGlobalChatOpen(true);
                                 setIsAIChatOpen(false);
                             } else {
+                                // Desktop: allow both to be open simultaneously
                                 setIsGlobalChatOpen(prev => !prev);
                             }
                         }}
@@ -111,6 +112,7 @@ export default function DashboardLayout({
                                 setIsAIChatOpen(true);
                                 setIsGlobalChatOpen(false);
                             } else {
+                                // Desktop: allow both to be open simultaneously
                                 setIsAIChatOpen(prev => !prev);
                             }
                         }}

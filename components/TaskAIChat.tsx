@@ -67,38 +67,45 @@ export default function TaskAIChat({ isMobile = false, isOpen, otherChatOpen = f
     // Calculate right and bottom positions based on state
     const getRightPosition = () => {
         if (isMobile) return '20px';
-        // In desktop: position to the left of GlobalChat
+        
+        // Desktop positioning logic
         const buttonWidth = 60;
-        const gap = 10;
-        const baseOffset = 20 + buttonWidth + gap; // 90px from right
+        const gap = 12;
         
-        // When TaskAIChat is open, it takes GlobalChat's position
-        if (isOpen) {
-            return '20px'; // Same position as GlobalChat when open
+        if (isOpen && otherChatOpen) {
+            // Both chats open: TaskAIChat on the left, GlobalChat on the right
+            const chatWidth = 380;
+            return `calc(20px + ${chatWidth}px + ${gap}px)`;
         }
         
-        // When both closed, TaskAIChat is to the left of GlobalChat
-        // If GlobalChat is open, we need to account for its chat window width
-        if (otherChatOpen) {
-            const chatWidth = 380; // GlobalChat chat window width when both are open
-            return `calc(${baseOffset}px + ${chatWidth}px + ${gap}px)`;
+        if (isOpen && !otherChatOpen) {
+            // Only TaskAIChat open: use GlobalChat's position
+            return '20px';
         }
         
-        return `${baseOffset}px`; // Just offset for GlobalChat button when both closed
+        if (!isOpen && otherChatOpen) {
+            // Only GlobalChat open: position button to the left of GlobalChat window
+            const chatWidth = 400;
+            return `calc(20px + ${chatWidth}px + ${gap}px)`;
+        }
+        
+        // Both closed: TaskAIChat button to the left of GlobalChat button
+        return `calc(20px + ${buttonWidth}px + ${gap}px)`;
     };
 
     const getBottomPosition = () => {
         if (isMobile) {
-            // In mobile: when both closed, TaskAIChat is above GlobalChat
-            // When TaskAIChat is open, it takes GlobalChat's position (bottom: 20px)
-            // When GlobalChat is open, TaskAIChat button is hidden
+            // Mobile: always at bottom, but adjust when both are closed
             if (isOpen) {
-                return '20px'; // Same position as GlobalChat when open
+                return '20px';
             }
             // When closed and GlobalChat is also closed, position above
-            const buttonHeight = 48;
-            const gap = 8;
-            return `calc(20px + ${buttonHeight}px + ${gap}px)`; // Above GlobalChat
+            if (!otherChatOpen) {
+                const buttonHeight = 48;
+                const gap = 8;
+                return `calc(20px + ${buttonHeight}px + ${gap}px)`;
+            }
+            return '20px';
         }
         return '20px';
     };
@@ -124,7 +131,7 @@ export default function TaskAIChat({ isMobile = false, isOpen, otherChatOpen = f
             <div
                 className="task-ai-chat-widget"
                 style={{
-                    width: isMobile ? '100%' : otherChatOpen ? 'min(380px, calc(50vw - 80px))' : 'min(400px, calc(50vw - 60px))',
+                    width: isMobile ? '100%' : otherChatOpen ? 'min(380px, calc(50vw - 100px))' : 'min(400px, calc(50vw - 60px))',
                     height: isMobile ? '100%' : 'min(550px, calc(100vh - 100px))',
                     background: 'var(--glass-bg-medium)',
                     backdropFilter: 'blur(var(--blur-amount-medium))',
@@ -135,8 +142,10 @@ export default function TaskAIChat({ isMobile = false, isOpen, otherChatOpen = f
                     display: isOpen ? 'flex' : 'none',
                     flexDirection: 'column',
                     overflow: 'hidden',
-                    transition: 'all 0.3s ease',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     transformOrigin: 'bottom right',
+                    opacity: isOpen ? 1 : 0,
+                    pointerEvents: isOpen ? 'auto' : 'none',
                 }}
             >
                 {/* Header */}

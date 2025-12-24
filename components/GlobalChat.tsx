@@ -36,15 +36,15 @@ export default function GlobalChat({ isMobile = false, isOpen: externalIsOpen, o
     // Calculate right and bottom positions based on state
     const getRightPosition = () => {
         if (isMobile) return '20px';
-        // In desktop: always at right: 20px (rightmost)
-        // When TaskAIChat is open, GlobalChat button is hidden, so position doesn't matter
+        
+        // Desktop: always at rightmost position (20px)
+        // When both are open, GlobalChat stays at right, TaskAIChat moves left
         return '20px';
     };
 
     const getBottomPosition = () => {
         if (isMobile) {
-            // In mobile: always at bottom (20px)
-            // When TaskAIChat is open, GlobalChat button is hidden
+            // Mobile: always at bottom (20px)
             return '20px';
         }
         return '20px';
@@ -57,9 +57,9 @@ export default function GlobalChat({ isMobile = false, isOpen: externalIsOpen, o
                 position: 'fixed',
                 bottom: getBottomPosition(),
                 right: getRightPosition(),
-                width: isOpen ? (isMobile ? 'calc(100vw - 40px)' : otherChatOpen ? 'min(380px, calc(50vw - 80px))' : 'min(400px, calc(50vw - 60px))') : 'auto',
+                width: isOpen ? (isMobile ? 'calc(100vw - 40px)' : otherChatOpen ? 'min(380px, calc(50vw - 100px))' : 'min(400px, calc(50vw - 60px))') : 'auto',
                 height: isOpen ? (isMobile ? 'calc(100vh - 100px)' : 'min(600px, calc(100vh - 100px))') : 'auto',
-                zIndex: 1000,
+                zIndex: isOpen ? 1000 : 999,
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'flex-end',
@@ -71,7 +71,7 @@ export default function GlobalChat({ isMobile = false, isOpen: externalIsOpen, o
             <div
                 className="global-chat-widget"
                 style={{
-                    width: isMobile ? '100%' : otherChatOpen ? 'min(380px, calc(50vw - 80px))' : 'min(400px, calc(50vw - 60px))',
+                    width: isMobile ? '100%' : otherChatOpen ? 'min(380px, calc(50vw - 100px))' : 'min(400px, calc(50vw - 60px))',
                     height: 'min(550px, calc(100vh - 100px))',
                     background: 'var(--glass-bg-medium)',
                     backdropFilter: 'blur(var(--blur-amount-medium))',
@@ -82,8 +82,10 @@ export default function GlobalChat({ isMobile = false, isOpen: externalIsOpen, o
                     display: isOpen ? 'flex' : 'none',
                     flexDirection: 'column',
                     overflow: 'hidden',
-                    transition: 'all 0.3s ease',
+                    transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                     transformOrigin: 'bottom right',
+                    opacity: isOpen ? 1 : 0,
+                    pointerEvents: isOpen ? 'auto' : 'none',
                 }}
             >
                 {/* Header */}
